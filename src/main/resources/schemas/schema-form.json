@@ -1,0 +1,39 @@
+{
+  "type" : "object",
+  "properties" : {
+    "url" : {
+      "title": "Slack WebHook URL",
+      "description": "Use the system proxy configured by administrator.",
+      "default": "https://hooks.slack.com/services/xxxxxxxxxxxxx",
+      "type" : "string"
+    },
+    "useSystemProxy": {
+      "title": "Use system proxy",
+      "description": "Use the system proxy configured by administrator.",
+      "type": "boolean"
+    },
+    "message" : {
+      "title": "Message",
+      "description": "The message to send to the webhook",
+      "type" : "string",
+      "x-schema-form": {
+        "type": "codemirror",
+        "codemirrorOptions": {
+          "placeholder": "Put the content of the message here...",
+          "lineWrapping": true,
+          "lineNumbers": true,
+          "allowDropFileTypes": true,
+          "autoCloseTags": true,
+          "mode": {
+            "name": "markdown",
+            "highlightFormatting": true
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "url",
+    "message"
+  ]
+}
