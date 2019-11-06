@@ -18,6 +18,7 @@ package io.gravitee.notifier.slack.configuration;
 import io.gravitee.notifier.api.NotifierConfiguration;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author David BRASSELY (david.brassely at graviteesource.com)
@@ -25,18 +26,20 @@ import java.io.Serializable;
  */
 public class SlackNotifierConfiguration implements NotifierConfiguration, Serializable {
 
-    private String url;
+    private String token;
 
     private boolean useSystemProxy;
 
     private String message;
 
-    public String getUrl() {
-        return url;
+    private String channel;
+
+    public String getToken() {
+        return token;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public boolean isUseSystemProxy() {
@@ -53,5 +56,13 @@ public class SlackNotifierConfiguration implements NotifierConfiguration, Serial
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getChannel() {
+        return channel;
+    }
+
+    public void setChannel(String channel) {
+        this.channel = channel;
     }
 }

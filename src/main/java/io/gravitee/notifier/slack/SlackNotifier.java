@@ -32,7 +32,6 @@ import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.Json;
 import io.vertx.core.net.ProxyOptions;
 import io.vertx.core.net.ProxyType;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.net.URI;
@@ -47,7 +46,11 @@ public class SlackNotifier extends AbstractConfigurableNotifier<SlackNotifierCon
 
     private static final String TYPE = "slack-notifier";
 
+    private static final String SLACK_POST_MESSAGES_URL = "https://slack.com/api/chat.postMessage";
     private static final String HTTPS_SCHEME = "https";
+
+    private final static String UTF8_CHARSET_NAME = "UTF-8";
+    private final static String APPLICATION_JSON = MediaType.APPLICATION_JSON + ";charset=" + UTF8_CHARSET_NAME;
 
     @Value("${httpClient.timeout:10000}")
     private int httpClientTimeout;
@@ -80,7 +83,7 @@ public class SlackNotifier extends AbstractConfigurableNotifier<SlackNotifierCon
     protected CompletableFuture<Void> doSend(Notification notification, Map<String, Object> parameters) {
         CompletableFuture<Void> future = new VertxCompletableFuture<>(Vertx.currentContext());
 
-        URI requestUri = URI.create(configuration.getUrl());
+        URI requestUri = URI.create(SLACK_POST_MESSAGES_URL);
 
         boolean ssl = HTTPS_SCHEME.equalsIgnoreCase(requestUri.getScheme());
 
@@ -128,7 +131,7 @@ public class SlackNotifier extends AbstractConfigurableNotifier<SlackNotifierCon
                     });
                 } else {
                     future.completeExceptionally(new NotifierException("Unable to send message to '" +
-                            configuration.getUrl() + "'. Status code: " + response.statusCode() + ". Message: " +
+                            SLACK_POST_MESSAGES_URL + "'. Status code: " + response.statusCode() + ". Message: " +
                             response.statusMessage(), null));
                 }
 
@@ -136,7 +139,8 @@ public class SlackNotifier extends AbstractConfigurableNotifier<SlackNotifierCon
                 client.close();
             });
 
-            request.headers().set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+            request.headers().set(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON);
+            request.headers().set(HttpHeaders.AUTHORIZATION, "Bearer " + configuration.getToken());
 
             request.exceptionHandler(throwable -> {
                 try {
@@ -150,6 +154,8 @@ public class SlackNotifier extends AbstractConfigurableNotifier<SlackNotifierCon
             });
 
             PostMessage message = new PostMessage();
+
+            message.setChannel(configuration.getChannel());
             message.setText(templatize(configuration.getMessage(), parameters));
 
             request.end(Json.encode(message));

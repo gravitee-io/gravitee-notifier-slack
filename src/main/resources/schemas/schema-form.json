@@ -1,20 +1,25 @@
 {
   "type" : "object",
   "properties" : {
-    "url" : {
-      "title": "Slack WebHook URL",
-      "description": "Use the system proxy configured by administrator.",
-      "default": "https://hooks.slack.com/services/xxxxxxxxxxxxx",
+    "channel": {
+      "title": "Slack channel",
+      "description": "The Slack channel to send the message to.",
+      "default": "#public",
+      "type": "string"
+    },
+    "token" : {
+      "title": "Slack token",
+      "description": "The token of the app or the bot.",
       "type" : "string"
     },
     "useSystemProxy": {
       "title": "Use system proxy",
-      "description": "Use the system proxy configured by administrator.",
+      "description": "Use the system proxy to make request to Slack API.",
       "type": "boolean"
     },
     "message" : {
       "title": "Message",
-      "description": "The message to send to the webhook",
+      "description": "The message to send to the channel",
       "type" : "string",
       "x-schema-form": {
         "type": "codemirror",
@@ -33,7 +38,8 @@
     }
   },
   "required": [
-    "url",
+    "channel",
+    "token",
     "message"
   ]
 }
