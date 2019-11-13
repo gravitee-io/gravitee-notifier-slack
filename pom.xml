@@ -34,6 +34,8 @@
     <name>Gravitee.io - Notifier - Slack</name>
 
     <properties>
+        <gravitee-license-api.version>1.0.0-SNAPSHOT</gravitee-license-api.version>
+        <gravitee-plugin-api.version>1.10.0-SNAPSHOT</gravitee-plugin-api.version>
         <gravitee-notifier-api.version>1.2.0-SNAPSHOT</gravitee-notifier-api.version>
         <maven-assembly-plugin.version>2.5.5</maven-assembly-plugin.version>
 
@@ -44,6 +46,22 @@
     </properties>
 
     <dependencies>
+        <!-- GraviteeSource dependencies -->
+        <dependency>
+            <groupId>com.graviteesource.license</groupId>
+            <artifactId>gravitee-license-api</artifactId>
+            <version>${gravitee-license-api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Gravitee.io -->
+        <dependency>
+            <groupId>io.gravitee.plugin</groupId>
+            <artifactId>gravitee-plugin-api</artifactId>
+            <version>${gravitee-plugin-api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
         <dependency>
             <groupId>io.gravitee.notifier</groupId>
             <artifactId>gravitee-notifier-api</artifactId>

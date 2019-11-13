@@ -22,8 +22,10 @@ import io.gravitee.notifier.api.AbstractConfigurableNotifier;
 import io.gravitee.notifier.api.Notification;
 import io.gravitee.notifier.api.exception.NotifierException;
 import io.gravitee.notifier.slack.configuration.SlackNotifierConfiguration;
+import io.gravitee.notifier.slack.deployment.SlackNotifierDeploymentLifecycle;
 import io.gravitee.notifier.slack.request.PostMessage;
 import io.gravitee.notifier.slack.vertx.VertxCompletableFuture;
+import io.gravitee.plugin.api.annotations.Plugin;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientOptions;
@@ -42,6 +44,9 @@ import java.util.concurrent.CompletableFuture;
  * @author David BRASSELY (david.brassely at graviteesource.com)
  * @author GraviteeSource Team
  */
+@Plugin(
+        deployment = SlackNotifierDeploymentLifecycle.class
+)
 public class SlackNotifier extends AbstractConfigurableNotifier<SlackNotifierConfiguration> {
 
     private static final String TYPE = "slack-notifier";
