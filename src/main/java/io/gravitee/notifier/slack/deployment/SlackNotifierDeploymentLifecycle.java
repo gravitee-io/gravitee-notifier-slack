@@ -16,13 +16,17 @@
 package io.gravitee.notifier.slack.deployment;
 
 import com.graviteesource.license.api.LicensedNode;
-import io.gravitee.plugin.api.DeploymentContext;
+import io.gravitee.node.api.plugin.NodeDeploymentContext;
 import io.gravitee.plugin.api.DeploymentLifecycle;
 
-public class SlackNotifierDeploymentLifecycle implements DeploymentLifecycle {
+/**
+ * @author David BRASSELY (david.brassely at graviteesource.com)
+ * @author GraviteeSource Team
+ */
+public class SlackNotifierDeploymentLifecycle implements DeploymentLifecycle<NodeDeploymentContext> {
 
     @Override
-    public void onDeploy(DeploymentContext context) {
+    public void onDeploy(NodeDeploymentContext context) {
         try {
             if (LicensedNode.class.isAssignableFrom(context.node().getClass())) {
                 return;

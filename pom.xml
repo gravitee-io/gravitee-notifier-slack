@@ -36,6 +36,7 @@
     <properties>
         <gravitee-license-api.version>1.0.0-SNAPSHOT</gravitee-license-api.version>
         <gravitee-plugin-api.version>1.10.0-SNAPSHOT</gravitee-plugin-api.version>
+        <gravitee-node-api.version>1.6.0-SNAPSHOT</gravitee-node-api.version>
         <gravitee-notifier-api.version>1.2.0-SNAPSHOT</gravitee-notifier-api.version>
         <maven-assembly-plugin.version>2.5.5</maven-assembly-plugin.version>
 
@@ -59,6 +60,13 @@
             <groupId>io.gravitee.plugin</groupId>
             <artifactId>gravitee-plugin-api</artifactId>
             <version>${gravitee-plugin-api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.gravitee.node</groupId>
+            <artifactId>gravitee-node-api</artifactId>
+            <version>${gravitee-node-api.version}</version>
             <scope>provided</scope>
         </dependency>
 
