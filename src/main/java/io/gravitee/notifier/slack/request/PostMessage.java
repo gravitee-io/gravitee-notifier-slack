@@ -15,6 +15,10 @@
  */
 package io.gravitee.notifier.slack.request;
 
+/**
+ * @author David BRASSELY (david.brassely at graviteesource.com)
+ * @author GraviteeSource Team
+ */
 public class PostMessage {
     private String channel;
 
