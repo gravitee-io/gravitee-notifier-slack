@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.gravitee.notifier.slack.deployment;
+package com.graviteesource.notifier.slack.deployment;
 
 import com.graviteesource.license.api.LicensedNode;
 import io.gravitee.node.api.plugin.NodeDeploymentContext;

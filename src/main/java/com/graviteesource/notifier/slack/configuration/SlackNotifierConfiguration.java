@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.gravitee.notifier.slack.configuration;
+package com.graviteesource.notifier.slack.configuration;
 
 import io.gravitee.notifier.api.NotifierConfiguration;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * @author David BRASSELY (david.brassely at graviteesource.com)
