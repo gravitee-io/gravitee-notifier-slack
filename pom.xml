@@ -29,7 +29,7 @@
 
     <groupId>com.graviteesource.notifier</groupId>
     <artifactId>gravitee-notifier-slack</artifactId>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
 
     <name>GraviteeSource - Notifier - Slack</name>
 
@@ -82,6 +82,7 @@
             <groupId>io.vertx</groupId>
             <artifactId>vertx-core</artifactId>
             <version>${vertx.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
