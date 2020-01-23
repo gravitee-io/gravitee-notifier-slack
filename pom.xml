@@ -29,7 +29,7 @@
 
     <groupId>com.graviteesource.notifier</groupId>
     <artifactId>gravitee-notifier-slack</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3-SNAPSHOT</version>
 
     <name>GraviteeSource - Notifier - Slack</name>
 
