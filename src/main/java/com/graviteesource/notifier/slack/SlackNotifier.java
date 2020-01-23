@@ -133,15 +133,18 @@ public class SlackNotifier extends AbstractConfigurableNotifier<SlackNotifierCon
                 if (response.statusCode() == HttpStatusCode.OK_200) {
                     response.bodyHandler(buffer -> {
                         future.complete(null);
+
+                        // Close client
+                        client.close();
                     });
                 } else {
                     future.completeExceptionally(new NotifierException("Unable to send message to '" +
                             SLACK_POST_MESSAGES_URL + "'. Status code: " + response.statusCode() + ". Message: " +
                             response.statusMessage(), null));
-                }
 
-                // Close client
-                client.close();
+                    // Close client
+                    client.close();
+                }
             });
 
             request.headers().set(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON);
