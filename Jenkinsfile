@@ -1,36 +1,13 @@
-node() {
-    def mvnArgs = ["-U", "-P gravitee-report", "clean", "install"]
+node ('Agent001') {
+    def buildInfo
 
-    stage "Checkout"
-    checkout scm
-
-    stage "Build"
-
-    def mvnHome = tool 'MVN33'
-    def javaHome = tool 'JDK 8'
-    withEnv(["PATH+MAVEN=${mvnHome}/bin",
-             "JAVA_HOME=${javaHome}"]) {
-        def mvnCommamd = ["${mvnHome}/bin/mvn"] + mvnArgs
-        sh "${mvnCommamd.join(" ")}"
-        try {
-            sh "ls **/target/surefire-reports/TEST-*.xml"
-            step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*.xml'])
-        } catch (Exception ex) {
-            echo "No tests to archive"
-        }
-        try {
-            sh "ls target/surefire-reports/TEST-*.xml"
-            step([$class: 'JUnitResultArchiver', testResults: 'target/surefire-reports/TEST-*.xml'])
-        } catch (Exception ex) {
-            echo "No tests to archive"
-        }
-
-        stage("SonarQube analysis") {
-            withSonarQubeEnv('SonarQube') {
-                sh "${mvnHome}/bin/mvn sonar:sonar"
-            }
-        }
+    stage('Prepare') {
+        checkout scm
+        def server = Artifactory.server 'sprint0-artifactory'
+        def rtMaven = Artifactory.newMavenBuild()
+        rtMaven.resolver server: server, releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot'
+        rtMaven.deployer server: server, releaseRepo: 'private-releases', snapshotRepo: 'private-snapshots'
+        rtMaven.tool = "mvn"
+        rtMaven.run pom: 'pom.xml', goals: 'clean install', buildInfo: buildInfo
     }
-
-    archiveArtifacts artifacts: 'target/gravitee-notifier-slack-*.zip', onlyIfSuccessful: true
 }
