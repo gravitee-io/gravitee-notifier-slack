@@ -34,6 +34,8 @@ import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.Json;
 import io.vertx.core.net.ProxyOptions;
 import io.vertx.core.net.ProxyType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.net.URI;
@@ -48,6 +50,8 @@ import java.util.concurrent.CompletableFuture;
         deployment = SlackNotifierDeploymentLifecycle.class
 )
 public class SlackNotifier extends AbstractConfigurableNotifier<SlackNotifierConfiguration> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SlackNotifier.class);
 
     private static final String TYPE = "slack-notifier";
 
@@ -132,6 +136,7 @@ public class SlackNotifier extends AbstractConfigurableNotifier<SlackNotifierCon
             request.handler(response -> {
                 if (response.statusCode() == HttpStatusCode.OK_200) {
                     response.bodyHandler(buffer -> {
+                        LOGGER.info("Slack notification sent!");
                         future.complete(null);
 
                         // Close client
@@ -152,6 +157,7 @@ public class SlackNotifier extends AbstractConfigurableNotifier<SlackNotifierCon
 
             request.exceptionHandler(throwable -> {
                 try {
+                    LOGGER.error("Error while sending slack notification", throwable);
                     future.completeExceptionally(throwable);
 
                     // Close client
