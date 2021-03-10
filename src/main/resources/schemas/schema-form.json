@@ -1,5 +1,6 @@
 {
   "type" : "object",
+  "id" : "urn:jsonschema:io:gravitee:notifier:slack:configuration:SlackNotifierConfiguration",
   "properties" : {
     "channel": {
       "title": "Slack channel",
