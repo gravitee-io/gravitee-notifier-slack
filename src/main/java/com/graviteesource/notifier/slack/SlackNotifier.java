@@ -24,13 +24,10 @@ import io.gravitee.notifier.api.exception.NotifierException;
 import com.graviteesource.notifier.slack.configuration.SlackNotifierConfiguration;
 import com.graviteesource.notifier.slack.deployment.SlackNotifierDeploymentLifecycle;
 import com.graviteesource.notifier.slack.request.PostMessage;
-import com.graviteesource.notifier.slack.vertx.VertxCompletableFuture;
 import io.gravitee.plugin.api.annotations.Plugin;
+import io.vertx.core.Future;
 import io.vertx.core.Vertx;
-import io.vertx.core.http.HttpClient;
-import io.vertx.core.http.HttpClientOptions;
-import io.vertx.core.http.HttpClientRequest;
-import io.vertx.core.http.HttpMethod;
+import io.vertx.core.http.*;
 import io.vertx.core.json.Json;
 import io.vertx.core.net.ProxyOptions;
 import io.vertx.core.net.ProxyType;
@@ -86,7 +83,7 @@ public class SlackNotifier extends AbstractConfigurableNotifier<SlackNotifierCon
 
     @Override
     protected CompletableFuture<Void> doSend(Notification notification, Map<String, Object> parameters) {
-        CompletableFuture<Void> future = new VertxCompletableFuture<>(Vertx.currentContext());
+        CompletableFuture<Void> future = new CompletableFuture<>();
 
         URI requestUri = URI.create(SLACK_POST_MESSAGES_URL);
 
@@ -123,55 +120,68 @@ public class SlackNotifier extends AbstractConfigurableNotifier<SlackNotifierCon
 
         HttpClient client = Vertx.currentContext().owner().createHttpClient(options);
 
-        try {
-            HttpClientRequest request = client
-                    .request(HttpMethod.POST, requestUri.getPath())
-                    .setFollowRedirects(true)
-                    .setTimeout(httpClientTimeout);
+        RequestOptions requestOpts = new RequestOptions()
+                .setURI(requestUri.getPath())
+                .setMethod(HttpMethod.POST)
+                .setFollowRedirects(true)
+                .setTimeout(httpClientTimeout);
 
-            request.handler(response -> {
-                if (response.statusCode() == HttpStatusCode.OK_200) {
-                    response.bodyHandler(buffer -> {
-                        future.complete(null);
 
-                        // Close client
-                        client.close();
-                    });
-                } else {
-                    future.completeExceptionally(new NotifierException("Unable to send message to '" +
-                            SLACK_POST_MESSAGES_URL + "'. Status code: " + response.statusCode() + ". Message: " +
-                            response.statusMessage(), null));
+        client
+                .request(requestOpts)
+                .onFailure(throwable -> handleFailure(future, client, throwable))
+                .onSuccess(httpClientRequest -> {
+                    try {
+                        // Connection is made, lets continue.
+                        final Future<HttpClientResponse> futureResponse;
 
-                    // Close client
-                    client.close();
-                }
-            });
+                        httpClientRequest.headers().set(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON);
+                        httpClientRequest.headers().set(HttpHeaders.AUTHORIZATION, "Bearer " + configuration.getToken());
 
-            request.headers().set(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON);
-            request.headers().set(HttpHeaders.AUTHORIZATION, "Bearer " + configuration.getToken());
+                        PostMessage message = new PostMessage();
 
-            request.exceptionHandler(throwable -> {
-                try {
-                    future.completeExceptionally(throwable);
+                        message.setChannel(configuration.getChannel());
+                        message.setText(templatize(configuration.getMessage(), parameters));
 
-                    // Close client
-                    client.close();
-                } catch (IllegalStateException ise) {
-                    // Do not take care about exception when closing client
-                }
-            });
-
-            PostMessage message = new PostMessage();
-
-            message.setChannel(configuration.getChannel());
-            message.setText(templatize(configuration.getMessage(), parameters));
-
-            request.end(Json.encode(message));
-        } catch (Exception ex) {
-            logger.error("Unable to fetch content using HTTP", ex);
-            future.completeExceptionally(ex);
-        }
+                        httpClientRequest.send(Json.encode(message))
+                                .onSuccess(httpClientResponse -> handleSuccess(future, client, httpClientResponse))
+                                .onFailure(throwable -> handleFailure(future, client, throwable));
+                    } catch (Exception e) {
+                        handleFailure(future, client, e);
+                    }
+                });
 
         return future;
+    }
+
+    private void handleSuccess(CompletableFuture<Void> future, HttpClient client, HttpClientResponse httpClientResponse) {
+        if (httpClientResponse.statusCode() == HttpStatusCode.OK_200) {
+            httpClientResponse.bodyHandler(buffer -> {
+                future.complete(null);
+
+                // Close client
+                client.close();
+            });
+        } else {
+            future.completeExceptionally(new NotifierException("Unable to send message to '" +
+                    SLACK_POST_MESSAGES_URL + "'. Status code: " + httpClientResponse.statusCode() + ". Message: " +
+                    httpClientResponse.statusMessage(), null));
+
+            // Close client
+            client.close();
+        }
+    }
+
+    private void handleFailure(CompletableFuture<Void> future, HttpClient client, Throwable throwable) {
+        try {
+            logger.error("Unable send Slack notification", throwable);
+
+            future.completeExceptionally(throwable);
+
+            // Close client
+            client.close();
+        } catch (IllegalStateException ise) {
+            // Do not take care about exception when closing client
+        }
     }
 }
