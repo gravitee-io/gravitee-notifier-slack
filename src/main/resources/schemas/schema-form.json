@@ -11,7 +11,8 @@
     "token" : {
       "title": "Slack token",
       "description": "The token of the app or the bot.",
-      "type" : "string"
+      "type" : "string",
+      "sensitive" : true
     },
     "useSystemProxy": {
       "title": "Use system proxy",
