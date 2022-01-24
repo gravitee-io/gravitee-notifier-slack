@@ -15,15 +15,15 @@
  */
 package com.graviteesource.notifier.slack;
 
+import com.graviteesource.notifier.slack.configuration.SlackNotifierConfiguration;
+import com.graviteesource.notifier.slack.deployment.SlackNotifierDeploymentLifecycle;
+import com.graviteesource.notifier.slack.request.PostMessage;
 import io.gravitee.common.http.HttpHeaders;
 import io.gravitee.common.http.HttpStatusCode;
 import io.gravitee.common.http.MediaType;
 import io.gravitee.notifier.api.AbstractConfigurableNotifier;
 import io.gravitee.notifier.api.Notification;
 import io.gravitee.notifier.api.exception.NotifierException;
-import com.graviteesource.notifier.slack.configuration.SlackNotifierConfiguration;
-import com.graviteesource.notifier.slack.deployment.SlackNotifierDeploymentLifecycle;
-import com.graviteesource.notifier.slack.request.PostMessage;
 import io.gravitee.plugin.api.annotations.Plugin;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
@@ -31,19 +31,16 @@ import io.vertx.core.http.*;
 import io.vertx.core.json.Json;
 import io.vertx.core.net.ProxyOptions;
 import io.vertx.core.net.ProxyType;
-import org.springframework.beans.factory.annotation.Value;
-
 import java.net.URI;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import org.springframework.beans.factory.annotation.Value;
 
 /**
  * @author David BRASSELY (david.brassely at graviteesource.com)
  * @author GraviteeSource Team
  */
-@Plugin(
-        deployment = SlackNotifierDeploymentLifecycle.class
-)
+@Plugin(deployment = SlackNotifierDeploymentLifecycle.class)
 public class SlackNotifier extends AbstractConfigurableNotifier<SlackNotifierConfiguration> {
 
     private static final String TYPE = "slack-notifier";
@@ -51,29 +48,36 @@ public class SlackNotifier extends AbstractConfigurableNotifier<SlackNotifierCon
     private static final String SLACK_POST_MESSAGES_URL = "https://slack.com/api/chat.postMessage";
     private static final String HTTPS_SCHEME = "https";
 
-    private final static String UTF8_CHARSET_NAME = "UTF-8";
-    private final static String APPLICATION_JSON = MediaType.APPLICATION_JSON + ";charset=" + UTF8_CHARSET_NAME;
+    private static final String UTF8_CHARSET_NAME = "UTF-8";
+    private static final String APPLICATION_JSON = MediaType.APPLICATION_JSON + ";charset=" + UTF8_CHARSET_NAME;
 
     @Value("${httpClient.timeout:10000}")
     private int httpClientTimeout;
+
     @Value("${httpClient.proxy.type:HTTP}")
     private String httpClientProxyType;
 
     @Value("${httpClient.proxy.http.host:#{systemProperties['http.proxyHost'] ?: 'localhost'}}")
     private String httpClientProxyHttpHost;
+
     @Value("${httpClient.proxy.http.port:#{systemProperties['http.proxyPort'] ?: 3128}}")
     private int httpClientProxyHttpPort;
+
     @Value("${httpClient.proxy.http.username:#{null}}")
     private String httpClientProxyHttpUsername;
+
     @Value("${httpClient.proxy.http.password:#{null}}")
     private String httpClientProxyHttpPassword;
 
     @Value("${httpClient.proxy.https.host:#{systemProperties['https.proxyHost'] ?: 'localhost'}}")
     private String httpClientProxyHttpsHost;
+
     @Value("${httpClient.proxy.https.port:#{systemProperties['https.proxyPort'] ?: 3128}}")
     private int httpClientProxyHttpsPort;
+
     @Value("${httpClient.proxy.https.username:#{null}}")
     private String httpClientProxyHttpsUsername;
+
     @Value("${httpClient.proxy.https.password:#{null}}")
     private String httpClientProxyHttpsPassword;
 
@@ -90,12 +94,12 @@ public class SlackNotifier extends AbstractConfigurableNotifier<SlackNotifierCon
         boolean ssl = HTTPS_SCHEME.equalsIgnoreCase(requestUri.getScheme());
 
         final HttpClientOptions options = new HttpClientOptions()
-                .setSsl(ssl)
-                .setTrustAll(true)
-                .setMaxPoolSize(1)
-                .setKeepAlive(false)
-                .setTcpKeepAlive(false)
-                .setConnectTimeout(httpClientTimeout);
+            .setSsl(ssl)
+            .setTrustAll(true)
+            .setMaxPoolSize(1)
+            .setKeepAlive(false)
+            .setTcpKeepAlive(false)
+            .setConnectTimeout(httpClientTimeout);
 
         if (configuration.isUseSystemProxy()) {
             ProxyOptions proxyOptions = new ProxyOptions();
@@ -114,42 +118,43 @@ public class SlackNotifier extends AbstractConfigurableNotifier<SlackNotifierCon
             options.setProxyOptions(proxyOptions);
         }
 
-        options.setDefaultPort(requestUri.getPort() != -1 ? requestUri.getPort() :
-                (HTTPS_SCHEME.equals(requestUri.getScheme()) ? 443 : 80));
+        options.setDefaultPort(
+            requestUri.getPort() != -1 ? requestUri.getPort() : (HTTPS_SCHEME.equals(requestUri.getScheme()) ? 443 : 80)
+        );
         options.setDefaultHost(requestUri.getHost());
 
         HttpClient client = Vertx.currentContext().owner().createHttpClient(options);
 
         RequestOptions requestOpts = new RequestOptions()
-                .setURI(requestUri.getPath())
-                .setMethod(HttpMethod.POST)
-                .setFollowRedirects(true)
-                .setTimeout(httpClientTimeout);
-
+            .setURI(requestUri.getPath())
+            .setMethod(HttpMethod.POST)
+            .setFollowRedirects(true)
+            .setTimeout(httpClientTimeout);
 
         client
-                .request(requestOpts)
-                .onFailure(throwable -> handleFailure(future, client, throwable))
-                .onSuccess(httpClientRequest -> {
-                    try {
-                        // Connection is made, lets continue.
-                        final Future<HttpClientResponse> futureResponse;
+            .request(requestOpts)
+            .onFailure(throwable -> handleFailure(future, client, throwable))
+            .onSuccess(httpClientRequest -> {
+                try {
+                    // Connection is made, lets continue.
+                    final Future<HttpClientResponse> futureResponse;
 
-                        httpClientRequest.headers().set(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON);
-                        httpClientRequest.headers().set(HttpHeaders.AUTHORIZATION, "Bearer " + configuration.getToken());
+                    httpClientRequest.headers().set(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON);
+                    httpClientRequest.headers().set(HttpHeaders.AUTHORIZATION, "Bearer " + configuration.getToken());
 
-                        PostMessage message = new PostMessage();
+                    PostMessage message = new PostMessage();
 
-                        message.setChannel(configuration.getChannel());
-                        message.setText(templatize(configuration.getMessage(), parameters));
+                    message.setChannel(configuration.getChannel());
+                    message.setText(templatize(configuration.getMessage(), parameters));
 
-                        httpClientRequest.send(Json.encode(message))
-                                .onSuccess(httpClientResponse -> handleSuccess(future, client, httpClientResponse))
-                                .onFailure(throwable -> handleFailure(future, client, throwable));
-                    } catch (Exception e) {
-                        handleFailure(future, client, e);
-                    }
-                });
+                    httpClientRequest
+                        .send(Json.encode(message))
+                        .onSuccess(httpClientResponse -> handleSuccess(future, client, httpClientResponse))
+                        .onFailure(throwable -> handleFailure(future, client, throwable));
+                } catch (Exception e) {
+                    handleFailure(future, client, e);
+                }
+            });
 
         return future;
     }
@@ -163,9 +168,17 @@ public class SlackNotifier extends AbstractConfigurableNotifier<SlackNotifierCon
                 client.close();
             });
         } else {
-            future.completeExceptionally(new NotifierException("Unable to send message to '" +
-                    SLACK_POST_MESSAGES_URL + "'. Status code: " + httpClientResponse.statusCode() + ". Message: " +
-                    httpClientResponse.statusMessage(), null));
+            future.completeExceptionally(
+                new NotifierException(
+                    "Unable to send message to '" +
+                    SLACK_POST_MESSAGES_URL +
+                    "'. Status code: " +
+                    httpClientResponse.statusCode() +
+                    ". Message: " +
+                    httpClientResponse.statusMessage(),
+                    null
+                )
+            );
 
             // Close client
             client.close();
