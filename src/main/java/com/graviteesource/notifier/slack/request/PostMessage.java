@@ -20,6 +20,7 @@ package com.graviteesource.notifier.slack.request;
  * @author GraviteeSource Team
  */
 public class PostMessage {
+
     private String channel;
 
     private String text;

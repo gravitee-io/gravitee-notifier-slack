@@ -16,7 +16,6 @@
 package com.graviteesource.notifier.slack.configuration;
 
 import io.gravitee.notifier.api.NotifierConfiguration;
-
 import java.io.Serializable;
 
 /**
