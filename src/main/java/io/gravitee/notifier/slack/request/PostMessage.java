@@ -13,48 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.graviteesource.notifier.slack.configuration;
-
-import io.gravitee.notifier.api.NotifierConfiguration;
-import java.io.Serializable;
+package io.gravitee.notifier.slack.request;
 
 /**
  * @author David BRASSELY (david.brassely at graviteesource.com)
  * @author GraviteeSource Team
  */
-public class SlackNotifierConfiguration implements NotifierConfiguration, Serializable {
-
-    private String token;
-
-    private boolean useSystemProxy;
-
-    private String message;
+public class PostMessage {
 
     private String channel;
 
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public boolean isUseSystemProxy() {
-        return useSystemProxy;
-    }
-
-    public void setUseSystemProxy(boolean useSystemProxy) {
-        this.useSystemProxy = useSystemProxy;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
+    private String text;
 
     public String getChannel() {
         return channel;
@@ -62,5 +31,13 @@ public class SlackNotifierConfiguration implements NotifierConfiguration, Serial
 
     public void setChannel(String channel) {
         this.channel = channel;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 }
