@@ -13,18 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.graviteesource.notifier.slack;
+package io.gravitee.notifier.slack;
 
-import com.graviteesource.notifier.slack.configuration.SlackNotifierConfiguration;
-import com.graviteesource.notifier.slack.deployment.SlackNotifierDeploymentLifecycle;
-import com.graviteesource.notifier.slack.request.PostMessage;
 import io.gravitee.common.http.HttpHeaders;
 import io.gravitee.common.http.HttpStatusCode;
 import io.gravitee.common.http.MediaType;
 import io.gravitee.notifier.api.AbstractConfigurableNotifier;
 import io.gravitee.notifier.api.Notification;
 import io.gravitee.notifier.api.exception.NotifierException;
-import io.gravitee.plugin.api.annotations.Plugin;
+import io.gravitee.notifier.slack.configuration.SlackNotifierConfiguration;
+import io.gravitee.notifier.slack.request.PostMessage;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.*;
@@ -40,7 +38,6 @@ import org.springframework.beans.factory.annotation.Value;
  * @author David BRASSELY (david.brassely at graviteesource.com)
  * @author GraviteeSource Team
  */
-@Plugin(deployment = SlackNotifierDeploymentLifecycle.class)
 public class SlackNotifier extends AbstractConfigurableNotifier<SlackNotifierConfiguration> {
 
     private static final String TYPE = "slack-notifier";

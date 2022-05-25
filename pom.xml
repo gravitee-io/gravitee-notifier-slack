@@ -27,7 +27,7 @@
         <version>20.0</version>
     </parent>
 
-    <groupId>com.graviteesource.notifier</groupId>
+    <groupId>io.gravitee.notifier</groupId>
     <artifactId>gravitee-notifier-slack</artifactId>
     <version>1.2.1</version>
 
