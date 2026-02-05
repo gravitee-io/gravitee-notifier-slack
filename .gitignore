@@ -23,6 +23,3 @@ admin/console/dist
 .settings/
 .classpath
 .project
-
-gravitee-gateway-standalone/gravitee-gateway-standalone-distribution/src/main/resources/plugins/
-gravitee-gateway-standalone/gravitee-gateway-standalone-distribution/src/main/resources/logs/
