@@ -1,3 +1,15 @@
+# [2.0.0-alpha.1](https://github.com/gravitee-io/gravitee-notifier-slack/compare/1.3.0...2.0.0-alpha.1) (2026-02-10)
+
+
+### chore
+
+* update project configuration ([86e7f6d](https://github.com/gravitee-io/gravitee-notifier-slack/commit/86e7f6d4f396f32a8ac8cf4094bb5dd3c2466eb0))
+
+
+### BREAKING CHANGES
+
+* requires JDK 21 and notifier-api 2.0.0
+
 # [1.3.0](https://github.com/gravitee-io/gravitee-notifier-slack/compare/1.2.1...1.3.0) (2022-05-30)
 
 
