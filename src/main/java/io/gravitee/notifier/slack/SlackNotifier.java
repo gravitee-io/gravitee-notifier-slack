@@ -26,6 +26,7 @@ import io.gravitee.notifier.slack.request.PostMessage;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.*;
+import io.vertx.core.http.PoolOptions;
 import io.vertx.core.json.Json;
 import io.vertx.core.net.ProxyOptions;
 import io.vertx.core.net.ProxyType;
@@ -93,7 +94,6 @@ public class SlackNotifier extends AbstractConfigurableNotifier<SlackNotifierCon
         final HttpClientOptions options = new HttpClientOptions()
             .setSsl(ssl)
             .setTrustAll(true)
-            .setMaxPoolSize(1)
             .setKeepAlive(false)
             .setTcpKeepAlive(false)
             .setConnectTimeout(httpClientTimeout);
@@ -120,7 +120,7 @@ public class SlackNotifier extends AbstractConfigurableNotifier<SlackNotifierCon
         );
         options.setDefaultHost(requestUri.getHost());
 
-        HttpClient client = Vertx.currentContext().owner().createHttpClient(options);
+        HttpClient client = Vertx.currentContext().owner().createHttpClient(options, new PoolOptions().setMaxSize(1));
 
         RequestOptions requestOpts = new RequestOptions()
             .setURI(requestUri.getPath())
