@@ -120,7 +120,10 @@ public class SlackNotifier extends AbstractConfigurableNotifier<SlackNotifierCon
         );
         options.setDefaultHost(requestUri.getHost());
 
-        HttpClient client = Vertx.currentContext().owner().createHttpClient(options, new PoolOptions().setHttp1MaxSize(1));
+public final int MAX_POOL_SIZE = 1;
+        PoolOptions poolOptions = PoolOptionsBuilder.build(MAX_POOL_SIZE);
+
+        HttpClient client = Vertx.currentContext().owner().createHttpClient(options, poolOptions);
 
         RequestOptions requestOpts = new RequestOptions()
             .setURI(requestUri.getPath())
