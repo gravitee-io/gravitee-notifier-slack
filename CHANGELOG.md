@@ -1,3 +1,18 @@
+# [3.0.0-alpha.1](https://github.com/gravitee-io/gravitee-notifier-slack/compare/2.0.0...3.0.0-alpha.1) (2026-03-31)
+
+
+### Features
+
+* bump orb version ([6aad843](https://github.com/gravitee-io/gravitee-notifier-slack/commit/6aad843911d42513a28e42f062a24bb1d694f925))
+* bumped AM version to 4.12.0-alpha.1 ([5b876a7](https://github.com/gravitee-io/gravitee-notifier-slack/commit/5b876a7887ca5fad1d9c159fcdce962d913acb42))
+* set maz http size in pool options ([47ef3a5](https://github.com/gravitee-io/gravitee-notifier-slack/commit/47ef3a5abd03946c7b38b174ccaa58d168791261))
+* vertx 5 upgrade, BREAKING CHANGES ([73a4a49](https://github.com/gravitee-io/gravitee-notifier-slack/commit/73a4a493840bb885af445335bfe65b5eccb6f420))
+
+
+### BREAKING CHANGES
+
+* JDK 25
+
 # [2.0.0](https://github.com/gravitee-io/gravitee-notifier-slack/compare/1.3.0...2.0.0) (2026-03-16)
 
 
