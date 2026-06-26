@@ -1,3 +1,22 @@
+# [3.0.0](https://github.com/gravitee-io/gravitee-notifier-slack/compare/2.0.0...3.0.0) (2026-06-26)
+
+
+* feat!: upgrade to Vert.x 5 ([b0535a5](https://github.com/gravitee-io/gravitee-notifier-slack/commit/b0535a5d7200664c9af8b98edaebe078337c8339))
+
+
+### BREAKING CHANGES
+
+* migrate the slack notifier to Vert.x 5. The HTTP client
+pool is now configured through PoolOptions (setHttp1MaxSize/setHttp2MaxSize)
+instead of HttpClientOptions.setMaxPoolSize.
+
+Align Gravitee dependencies to released versions:
+- gravitee-bom: 9.0.0
+- gravitee-common: 5.0.0
+- gravitee-node: 9.0.0
+- gravitee-notifier-api: 2.0.0
+- gravitee-parent: 24.0.2 (keep Java 21 baseline, do not compile in Java 25)
+
 # [2.0.0](https://github.com/gravitee-io/gravitee-notifier-slack/compare/1.3.0...2.0.0) (2026-03-16)
 
 
