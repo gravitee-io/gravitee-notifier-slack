@@ -8,5 +8,15 @@ image:https://circleci.com/gh/gravitee-io/gravitee-notifier-slack.svg?style=svg[
 image:https://f.hubspotusercontent40.net/hubfs/7600448/gravitee-github-button.jpg["Join the community forum", link="https://community.gravitee.io?utm_source=readme", height=20]
 endif::[]
 
+== Compatibility matrix
+Strikethrough text indicates that a version is deprecated.
+
+|===
+| Plugin version | APIM             | AM
+
+| 3.x            | 4.12.x and above | 4.12.x and above
+| 2.x            | 4.11.x           | -
+| 1.x            | up to 4.10.x     | 4.9.x to 4.11.x
+|===
 
 == Documentation
