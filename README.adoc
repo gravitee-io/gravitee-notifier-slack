@@ -15,8 +15,8 @@ Strikethrough text indicates that a version is deprecated.
 | Plugin version | APIM             | AM
 
 | 3.x            | 4.12.x and above | 4.12.x and above
-| 2.x            | 4.11.x           | -
-| 1.x            | up to 4.10.x     | 4.9.x to 4.11.x
+| 2.x            | 4.7.x to 4.11.x  | 4.7.x to 4.11.x
+| 1.x            | up to 4.11.x     | up to 4.11.x
 |===
 
 == Documentation
